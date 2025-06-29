@@ -361,6 +361,29 @@ void dcd_edpt_close_all(uint8_t rhport)
   _allocated_fifos = 1;
 }
 
+void dcd_edpt_close(uint8_t rhport, uint8_t ep_addr)
+{
+  (void) rhport;
+
+  usb_out_endpoint_t *out_ep = &(USB0.out_ep_reg[0]);
+  usb_in_endpoint_t *in_ep = &(USB0.in_ep_reg[0]);
+
+  // Disable non-control interrupt
+  USB0.daintmsk = USB_OUTEPMSK0_M | USB_INEPMSK0_M;
+
+  uint8_t n = tu_edpt_number(ep_addr);
+
+  // disable OUT endpoint
+  out_ep[n].doepctl = 0;
+  xfer_status[n][TUSB_DIR_OUT].max_size = 0;
+
+  // disable IN endpoint
+  in_ep[n].diepctl = 0;
+  xfer_status[n][TUSB_DIR_IN].max_size = 0;
+
+  _allocated_fifos = 1;
+}
+
 bool dcd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t *buffer, uint16_t total_bytes)
 {
   (void)rhport;
@@ -872,6 +895,11 @@ static void _dcd_int_handler(void* arg)
                   USB_INCOMPIP_M    |
                   USB_FETSUSP_M     |
                   USB_PTXFEMP_M;
+}
+
+void dcd_int_handler(uint8_t rhport) {
+  (void) rhport;
+  _dcd_int_handler(NULL);
 }
 
 void dcd_int_enable (uint8_t rhport)

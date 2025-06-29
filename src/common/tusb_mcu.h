@@ -574,9 +574,9 @@
 #endif
 
 // USBIP that support ISO alloc & activate API
-#if defined(TUP_USBIP_DWC2) || defined(TUP_USBIP_FSDEV) || defined(TUP_USBIP_MUSB)
-  #define TUP_DCD_EDPT_ISO_ALLOC
-#endif
+// #if defined(TUP_USBIP_DWC2) || defined(TUP_USBIP_FSDEV) || defined(TUP_USBIP_MUSB)
+//   #define TUP_DCD_EDPT_ISO_ALLOC
+// #endif
 
 #if defined(TUP_USBIP_DWC2) // && CFG_TUD_DWC2_DMA_ENABLE == 0
   #define TUP_MEM_CONST_ADDR
